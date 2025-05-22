@@ -6,7 +6,7 @@ import json
 from difflib import SequenceMatcher
 #--------------------- Módulos / Librerías ----------------------
 
-#--------------------- Funciones ---------------------
+#--------------------- Funciones auxiliares ---------------------
 def anadir_pregunta_y_respuesta(pregunta):
     respuesta = input("Escriba una respuesta para su pregunta: ")
 
@@ -30,9 +30,16 @@ def anadir_pregunta_y_respuesta(pregunta):
         with open('preguntas.json', 'w', encoding='utf-8') as archivo_json_actualizado:
             json.dump(data, archivo_json_actualizado, ensure_ascii=False, indent=4)
 
-def main():
-    print("Test")
 
+# Función para calcular la similitud entre la pregunta del archivo y la del usuario
+def calcular_similtud(data, item, pregunta) -> float:
+    ratio_de_similitud = SequenceMatcher(None, pregunta, data[item][0]["pregunta"]).ratio()
+    return ratio_de_similitud
+#--------------------- Funciones auxiliares ---------------------
+
+
+#---------------------- Función principal ----------------------
+def main():
     # Se guarda la pregunta del usuario en una variable
     pregunta = input("Escriba una pregunta: ")
 
@@ -44,8 +51,7 @@ def main():
         data = json.load(archivo_json)
 
         for item in data:     
-            # Se calcula la similitud entre la pregunta del archivo y la del usuario, eso devuelve un número entre 0 y 1. Mientras más cercano al 1, más similares son las preguntas.
-            ratio_de_similitud = SequenceMatcher(None, pregunta, data[item][0]["pregunta"]).ratio()
+            ratio_de_similitud = calcular_similtud(data, item, pregunta)
 
             if pregunta == data[item][0]["pregunta"] or ratio_de_similitud >= 0.85:
                 pregunta_encontrada = True
@@ -56,25 +62,25 @@ def main():
         if pregunta_encontrada:
             return
         
-        # Se inician una variable y una lista respectivamente para llevar la cuenta de la cantidad de preguntas similares a la del usuario.
-        cantidad_de_preguntas_similares_encontradas = 0
+        # Se inicia una lista para llevar la cuenta de la cantidad de preguntas similares a la del usuario.
         preguntas_similares = []
 
-        # Se calcula la similitud entre dicha línea y la pregunta del usuario, eso devuelve un número entre 0 y 1. Mientras más cercano al 1, más similares son las preguntas.
+        # Se calcula la similitud entre todas las preguntas del archivo y la pregunta del usuario, eso devuelve un número entre 0 y 1. Mientras más cercano al 1, más similares son las preguntas.
         with open("preguntas.json", "r", encoding="utf-8") as archivo_json:
+
             data = json.load(archivo_json)
+
             for item in data:
-                ratio_de_similitud = SequenceMatcher(None, pregunta, data[item][0]["pregunta"]).ratio()
+                ratio_de_similitud = calcular_similtud(data, item, pregunta)
 
                 # Si el valor devuelto es mayor o igual a 0.58, significa que las preguntas son bastante similares, así que se procede a incrementar la variable de preguntas encontradas, además de agregar la pregunta a la lista.
                 if ratio_de_similitud >= 0.58:
-                    cantidad_de_preguntas_similares_encontradas += 1
                     preguntas_similares.append(data[item][0]["pregunta"])
 
             # Despues de iterar sobre todas las preguntas del archivo json, se manejan los tres casos posibles de valores que puede tomar la variable de preguntas encontradas:
 
             # Si la variable es 0, se imprime que no hay preguntas similares y se le pregunta al usuario si quiere agregar su pregunta al archivo o no.
-            if cantidad_de_preguntas_similares_encontradas == 0:
+            if len(preguntas_similares) == 0:
                 print("No se encontraron preguntas similares a la suya")
 
                 aceptar_nueva_pregunta = input("Desea agregar su pregunta a la lista? Responda Si o No: ")
@@ -86,8 +92,8 @@ def main():
                     quit()
                 
             # Si la variable es 1, se imprime que se encontró 1 pregunta (singular) seguido de la lista que contiene la pregunta encontrada. 
-            elif cantidad_de_preguntas_similares_encontradas == 1:
-                print("Se encontró " + str(cantidad_de_preguntas_similares_encontradas) + " pregunta similar a la suya.")
+            elif len(preguntas_similares) == 1:
+                print("Se encontró " + str(len(preguntas_similares)) + " pregunta similar a la suya.")
 
                 for item in preguntas_similares:
                     print("1. " + item)
@@ -113,11 +119,10 @@ def main():
                 
             # Si la variable es 2 o más, se imprime que se encontraron "x" preguntas (plural) seguido de la lista que contiene las preguntas encontradas.
             else:
-                print("Se encontraron " + str(cantidad_de_preguntas_similares_encontradas) + " preguntas similares a la suya.")
-                counter = 0
-                for item in preguntas_similares:
-                    counter += 1
-                    print(str(counter) + ". " + item)
+                print("Se encontraron " + str(len(preguntas_similares)) + " preguntas similares a la suya.")
+
+                for n, item in enumerate(preguntas_similares):
+                    print(str(n + 1) + ". " + item)
 
                 # A continuación, se le pide al usuario que escriba el número de la pregunta de la cual quiera saber la respuesta, u otros 2 números para agregar su pregunta al archivo o cerrar el programa respectivamente.
                 respuesta_de_pregunta_similar = int(input("Escriba un número del 1 al " + str(len(preguntas_similares)) + " para saber la respuesta a la pregunta similar encontrada. Sino, escriba " + str(len(preguntas_similares) + 1) + " para agregar su pregunta al archivo o " + str(len(preguntas_similares) + 2) + " para cerrar el programa: "))
@@ -136,7 +141,7 @@ def main():
                     
                 else:
                     quit()
-#--------------------- Funciones ---------------------
+#---------------------- Función principal ----------------------
 
 
 main()
