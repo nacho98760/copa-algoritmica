@@ -1,0 +1,62 @@
+{
+    "pregunta_1": [
+        {
+            "pregunta": "Qué es una variable en programación",
+            "respuesta": "Una variable es un nombre que se utiliza para almacenar un valor en la memoria."
+        }
+    ],
+    "pregunta_2": [
+        {
+            "pregunta": "Qué es un algoritmo",
+            "respuesta": "Es una secuencia de pasos lógicos y finitos que resuelven un problema."
+        }
+    ],
+    "pregunta_3": [
+        {
+            "pregunta": "Qué es un bucle while",
+            "respuesta": "Es una estructura de control que repite un bloque de código mientras se cumpla una condición. Se usa cuando no se sabe cuantas veces se repetirá el bucle."
+        }
+    ],
+    "pregunta_4": [
+        {
+            "pregunta": "Para qué se usa print() en python",
+            "respuesta": "La función print() se usa para mostrar mensajes o valores en pantalla."
+        }
+    ],
+    "pregunta_5": [
+        {
+            "pregunta": "Qué es un error de sintaxis",
+            "respuesta": "Un error de sintaxis es un error en la estructura del codigo como olvidar cerrar un paréntesis o usar mal una palabra clave."
+        }
+    ],
+    "pregunta_6": [
+        {
+            "pregunta": "Qué se entiende por condicional",
+            "respuesta": "El término condicional se refiere a una estructura que expresa una condición y su consecuencia."
+        }
+    ],
+    "pregunta_7": [
+        {
+            "pregunta": "Qué es el pseudocódigo",
+            "respuesta": "Es un método para describir un proceso o algoritmo mediante instrucciones que se asemejan al lenguaje humano. Se usa para planificar y estructurar la lógica antes de codificar."
+        }
+    ],
+    "pregunta_8": [
+        {
+            "pregunta": "Qué es una constante en programación",
+            "respuesta": "Un valor fijo que se asigna una vez y no cambia durante la ejecución."
+        }
+    ],
+    "pregunta_9": [
+        {
+            "pregunta": "Para qué se usa una función en programación",
+            "respuesta": "Una función en programación se usa para agrupar un conjunto de instrucciones bajo un nombre. Esto permite reutilizar código y mejorar su organización."
+        }
+    ],
+    "pregunta_10": [
+        {
+            "pregunta": "Cómo se documenta el código",
+            "respuesta": "Para documentar el codigo se usan comentarios con # para una línea o triples comillas para múltiples líneas al inicio de funciones para describir su uso."
+        }
+    ]
+}
