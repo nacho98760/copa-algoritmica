@@ -31,6 +31,7 @@ def anadir_pregunta_y_respuesta(pregunta):
             json.dump(data, archivo_json_actualizado, ensure_ascii=False, indent=4)
 
 def main():
+    print("Test")
 
     # Se guarda la pregunta del usuario en una variable
     pregunta = input("Escriba una pregunta: ")
@@ -125,7 +126,7 @@ def main():
                 if respuesta_de_pregunta_similar >= 1 and respuesta_de_pregunta_similar <= len(preguntas_similares):
                     with open("preguntas.json", "r", encoding="utf-8") as archivo_json:
                         data = json.load(archivo_json)
-                        
+
                         for item in data:
                             if data[item][0]["pregunta"] == preguntas_similares[respuesta_de_pregunta_similar - 1]:
                                 print(data[item][0]["respuesta"])
