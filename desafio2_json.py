@@ -31,10 +31,79 @@ def anadir_pregunta_y_respuesta(pregunta):
             json.dump(data, archivo_json_actualizado, ensure_ascii=False, indent=4)
 
 
-# Función para calcular la similitud entre la pregunta del archivo y la del usuario
+# Función para calcular la similitud entre la pregunta del archivo y la del usuario.
 def calcular_similtud(data, item, pregunta) -> float:
     ratio_de_similitud = SequenceMatcher(None, pregunta, data[item][0]["pregunta"]).ratio()
     return ratio_de_similitud
+
+
+# Función a ejecutar si se encuentran 0 preguntas similares.
+def caso_cero_preguntas_encontradas(pregunta):
+    print("No se encontraron preguntas similares a la suya")
+
+    aceptar_nueva_pregunta = input("Desea agregar su pregunta a la lista? Responda Si o No: ")
+
+    # Si el usuario desea añadir su pregunta, se le pide que escriba una respuesta para esta.
+    if aceptar_nueva_pregunta.capitalize() == "Si" or aceptar_nueva_pregunta.capitalize() == "Sí":
+        anadir_pregunta_y_respuesta(pregunta)
+    else:
+        quit()
+
+
+# Función para responder la pregunta que elija el usuario.
+def buscar_y_responder_pregunta(data, preguntas_similares, respuesta_de_pregunta_similar):
+    for item in data:
+        if data[item][0]["pregunta"] == preguntas_similares[respuesta_de_pregunta_similar - 1]:
+            print(data[item][0]["respuesta"])
+
+
+# Función a ejecutar si se encuentra 1 pregunta similar.
+def caso_una_pregunta_encontrada(pregunta: str, preguntas_similares: list):
+    print("Se encontró " + str(len(preguntas_similares)) + " pregunta similar a la suya.")
+
+    for item in preguntas_similares:
+        print("1. " + item)
+
+                    
+    # Se le pide al usuario que escriba 1 para saber la respuesta a su pregunta, 2 para agregar su pregunta al archivo o 3 para cerrar el programa.
+    respuesta_de_pregunta_similar = int(input("Escriba 1 para saber la respuesta a la pregunta similar encontrada, 2 para agregar su pregunta al archivo o 3 para cerrar el programa: "))
+                    
+
+    if respuesta_de_pregunta_similar == 1:
+        with open("preguntas.json", "r", encoding="utf-8") as archivo_json:
+            data = json.load(archivo_json)
+
+            buscar_y_responder_pregunta(data, preguntas_similares, respuesta_de_pregunta_similar)
+                    
+    elif respuesta_de_pregunta_similar == len(preguntas_similares) + 1:
+        anadir_pregunta_y_respuesta(pregunta)
+                    
+    else:
+        quit()
+
+
+# Función a ejecutar si se encuentran 2 o más preguntas similares.
+def caso_dos_o_mas_preguntas_encontradas(pregunta, preguntas_similares):
+    print("Se encontraron " + str(len(preguntas_similares)) + " preguntas similares a la suya.")
+
+    for n, item in enumerate(preguntas_similares):
+        print(str(n + 1) + ". " + item)
+
+    # Se le pide al usuario que escriba el número de la pregunta de la cual quiera saber la respuesta, u otros 2 números para agregar su pregunta al archivo o cerrar el programa respectivamente.
+    respuesta_de_pregunta_similar = int(input("Escriba un número del 1 al " + str(len(preguntas_similares)) + " para saber la respuesta a la pregunta similar encontrada. Sino, escriba " + str(len(preguntas_similares) + 1) + " para agregar su pregunta al archivo o " + str(len(preguntas_similares) + 2) + " para cerrar el programa: "))
+
+    # Si el número ingresado corresponde a una pregunta, se abre el archivo json y se busca la respuesta de la pregunta similar que el usuario haya elegido.
+    if respuesta_de_pregunta_similar >= 1 and respuesta_de_pregunta_similar <= len(preguntas_similares):
+        with open("preguntas.json", "r", encoding="utf-8") as archivo_json:
+            data = json.load(archivo_json)
+
+            buscar_y_responder_pregunta(data, preguntas_similares, respuesta_de_pregunta_similar)
+                    
+    elif respuesta_de_pregunta_similar == len(preguntas_similares) + 1:
+        anadir_pregunta_y_respuesta(pregunta)
+                    
+    else:
+        quit()
 #--------------------- Funciones auxiliares ---------------------
 
 
@@ -77,70 +146,21 @@ def main():
                 if ratio_de_similitud >= 0.58:
                     preguntas_similares.append(data[item][0]["pregunta"])
 
+
             # Despues de iterar sobre todas las preguntas del archivo json, se manejan los tres casos posibles de valores que puede tomar la variable de preguntas encontradas:
 
             # Si la variable es 0, se imprime que no hay preguntas similares y se le pregunta al usuario si quiere agregar su pregunta al archivo o no.
             if len(preguntas_similares) == 0:
-                print("No se encontraron preguntas similares a la suya")
-
-                aceptar_nueva_pregunta = input("Desea agregar su pregunta a la lista? Responda Si o No: ")
-
-                # Si el usuario desea añadir su pregunta, se le pide que escriba una respuesta para esta.
-                if aceptar_nueva_pregunta.capitalize() == "Si" or aceptar_nueva_pregunta.capitalize() == "Sí":
-                        anadir_pregunta_y_respuesta(pregunta)
-                else:
-                    quit()
+                caso_cero_preguntas_encontradas(pregunta)
                 
             # Si la variable es 1, se imprime que se encontró 1 pregunta (singular) seguido de la lista que contiene la pregunta encontrada. 
             elif len(preguntas_similares) == 1:
-                print("Se encontró " + str(len(preguntas_similares)) + " pregunta similar a la suya.")
-
-                for item in preguntas_similares:
-                    print("1. " + item)
-
-                    
-                # A continuación, se le pide al usuario que escriba 1 para saber la respuesta a su pregunta, 2 para agregar su pregunta al archivo o 3 para cerrar el programa.
-                respuesta_de_pregunta_similar = int(input("Escriba 1 para saber la respuesta a la pregunta similar encontrada, 2 para agregar su pregunta al archivo o 3 para cerrar el programa: "))
-                    
-
-                if respuesta_de_pregunta_similar == 1:
-                    with open("preguntas.json", "r", encoding="utf-8") as archivo_json:
-                        data = json.load(archivo_json)
-
-                        for item in data:
-                            if data[item][0]["pregunta"] == preguntas_similares[0]:
-                                print(data[item][0]["respuesta"])
-                    
-                elif respuesta_de_pregunta_similar == 2:
-                        anadir_pregunta_y_respuesta(pregunta)
-                    
-                else:
-                    quit()
+                caso_una_pregunta_encontrada(pregunta, preguntas_similares)
                 
             # Si la variable es 2 o más, se imprime que se encontraron "x" preguntas (plural) seguido de la lista que contiene las preguntas encontradas.
             else:
-                print("Se encontraron " + str(len(preguntas_similares)) + " preguntas similares a la suya.")
-
-                for n, item in enumerate(preguntas_similares):
-                    print(str(n + 1) + ". " + item)
-
-                # A continuación, se le pide al usuario que escriba el número de la pregunta de la cual quiera saber la respuesta, u otros 2 números para agregar su pregunta al archivo o cerrar el programa respectivamente.
-                respuesta_de_pregunta_similar = int(input("Escriba un número del 1 al " + str(len(preguntas_similares)) + " para saber la respuesta a la pregunta similar encontrada. Sino, escriba " + str(len(preguntas_similares) + 1) + " para agregar su pregunta al archivo o " + str(len(preguntas_similares) + 2) + " para cerrar el programa: "))
-
-                # Si el número ingresado corresponde a una pregunta, se abre el archivo json y se busca la respuesta de la pregunta similar que el usuario haya elegido.
-                if respuesta_de_pregunta_similar >= 1 and respuesta_de_pregunta_similar <= len(preguntas_similares):
-                    with open("preguntas.json", "r", encoding="utf-8") as archivo_json:
-                        data = json.load(archivo_json)
-
-                        for item in data:
-                            if data[item][0]["pregunta"] == preguntas_similares[respuesta_de_pregunta_similar - 1]:
-                                print(data[item][0]["respuesta"])
-                    
-                elif respuesta_de_pregunta_similar == len(preguntas_similares) + 1:
-                    anadir_pregunta_y_respuesta(pregunta_encontrada)
-                    
-                else:
-                    quit()
+                print("preguntas similares: ", len(preguntas_similares))
+                caso_dos_o_mas_preguntas_encontradas(pregunta, preguntas_similares)
 #---------------------- Función principal ----------------------
 
 
