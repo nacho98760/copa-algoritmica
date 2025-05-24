@@ -58,5 +58,11 @@
             "pregunta": "Cómo se documenta el código",
             "respuesta": "Para documentar el codigo se usan comentarios con # para una línea o triples comillas para múltiples líneas al inicio de funciones para describir su uso."
         }
+    ],
+    "pregunta_11": [
+        {
+            "pregunta": "que es un algoritmo en programacion+",
+            "respuesta": "es una secuencia de bots"
+        }
     ]
 }
